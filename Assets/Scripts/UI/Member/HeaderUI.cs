@@ -9,7 +9,6 @@ public class HeaderUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI nameText;
     [SerializeField] private TextMeshProUGUI levelText;
     [SerializeField] private Button notificationButton;
-    [SerializeField] private GameObject notificationBadge;
 
     private void Start()
     {
@@ -21,8 +20,6 @@ public class HeaderUI : MonoBehaviour
     {
         nameText.text = "홍길동";
         levelText.text = "레벨 3";
-        
-        notificationBadge.SetActive(false);
     }
     
     private void OnNotificationClicked()
