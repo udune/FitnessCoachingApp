@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.Data;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -6,6 +8,9 @@ public class MemberHomeController : MonoBehaviour
 {
     [Header("UI References")]
     [SerializeField] private HeaderUI header;
+    [SerializeField] private StatusGaugeUI statusGauge;
+    [SerializeField] private TextMeshProUGUI statusTitle;
+    [SerializeField] private TextMeshProUGUI statusDescription;
     [SerializeField] private Transform workoutListContainer;
     [SerializeField] private GameObject workoutItemPrefab;
     [SerializeField] private Button aiCoachButton;
@@ -17,6 +22,23 @@ public class MemberHomeController : MonoBehaviour
         aiCoachButton.onClick.AddListener(OnAICoachClicked);
         LoadTodayRoutines();
         DisplayRoutines();
+
+        UpdateStatus();
+    }
+
+    private void UpdateStatus()
+    {
+        float metabolicEfficiency = 75f; // 예시 값
+        
+        if (statusGauge != null)
+        {
+            statusGauge.UpdateGauge(metabolicEfficiency);
+        }
+
+        if (statusTitle != null)
+        {
+            statusTitle.text = "현재 대사 효율";
+        }
     }
 
     private void LoadTodayRoutines()
