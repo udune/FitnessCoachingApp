@@ -15,20 +15,19 @@ public class MemberHomeController : MonoBehaviour
     [SerializeField] private GameObject workoutItemPrefab;
     [SerializeField] private Button aiCoachButton;
 
-    private List<WorkoutRoutine> todayRoutines;
+    private List<WorkoutData> todayRoutines;
 
     private void Start()
     {
         aiCoachButton.onClick.AddListener(OnAICoachClicked);
         LoadTodayRoutines();
         DisplayRoutines();
-
         UpdateStatus();
     }
 
     private void UpdateStatus()
     {
-        float metabolicEfficiency = 75f; // 예시 값
+        float metabolicEfficiency = 75f;
         
         if (statusGauge != null)
         {
@@ -43,13 +42,13 @@ public class MemberHomeController : MonoBehaviour
 
     private void LoadTodayRoutines()
     {
-        todayRoutines = new List<WorkoutRoutine>
+        todayRoutines = new List<WorkoutData>
         {
-            new WorkoutRoutine { id = 1, name = "푸쉬업", sets = 3, reps = 15 },
-            new WorkoutRoutine { id = 2, name = "스쿼트", sets = 3, reps = 20 },
-            new WorkoutRoutine { id = 3, name = "플랭크", sets = 3, reps = 60 },
-            new WorkoutRoutine { id = 4, name = "버피", sets = 3, reps = 10 },
-            new WorkoutRoutine { id = 5, name = "런지", sets = 3, reps = 12 }
+            new WorkoutData("푸쉬업", 3, 15, "근력"),
+            new WorkoutData("스쿼트", 3, 20, "근력"),
+            new WorkoutData("플랭크", 3, 60, "근력"),
+            new WorkoutData("버피", 3, 10, "유산소"),
+            new WorkoutData("런지", 3, 12, "근력")
         };
     }
 
