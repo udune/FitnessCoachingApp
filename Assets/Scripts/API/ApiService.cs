@@ -8,7 +8,7 @@ public class ApiService : MonoBehaviour
 {
     public static ApiService Instance { get; private set; }
 
-    // private const string apiBaseUrl = "YOUR_API_ENDPOINT"; // 실제 API 주소로 변경하세요.
+    private const string apiBaseUrl = "https://fitness-coaching-api-398791061190.asia-northeast3.run.app";
 
     void Awake()
     {
@@ -23,49 +23,55 @@ public class ApiService : MonoBehaviour
         }
     }
 
-    public void GetRecommendations(string userId, Action<WorkoutRecommendation> onSuccess, Action<string> onError)
+    public void GetRecommendations(string memberId, Action<ApiRoutinesResponse> onSuccess, Action<string> onError)
     {
-        // StartCoroutine(FetchRecommendations(userId, onSuccess, onError));
-        
-        // --- Mock 데이터 사용 ---
-        var mockData = new WorkoutRecommendation
+        // StartCoroutine(FetchRecommendations(memberId, onSuccess, onError));
+
+        // --- Mock 데이터 사용 (API 미구현으로 임시 활성화) ---
+        Debug.Log("API가 아직 구현되지 않아 Mock 데이터를 사용합니다.");
+        var mockResponse = new ApiRoutinesResponse
         {
-            recommendations = new List<Workout>
+            routines = new List<Workout>
             {
-                new Workout { name = "스쿼트", sets = 3, reps = 15 },
-                new Workout { name = "푸쉬업", sets = 3, reps = 12 },
-                new Workout { name = "플랭크", sets = 3, reps = 60 }, // 초 단위라고 가정
-                new Workout { name = "런지", sets = 3, reps = 10 },
-                new Workout { name = "덤벨 컬", sets = 3, reps = 12 }
+                new Workout { name = "스쿼트 (Mock)", sets = 3, reps = 15 },
+                new Workout { name = "푸쉬업 (Mock)", sets = 3, reps = 12 },
+                new Workout { name = "플랭크 (Mock)", sets = 3, reps = 60 },
+                new Workout { name = "런지 (Mock)", sets = 3, reps = 10 },
+                new Workout { name = "덤벨 컬 (Mock)", sets = 3, reps = 12 }
             }
         };
-        onSuccess?.Invoke(mockData);
+        onSuccess?.Invoke(mockResponse);
         // --- Mock 데이터 끝 ---
     }
 
     /*
-    // 실제 API 호출 코루틴
-    private IEnumerator FetchRecommendations(string userId, Action<WorkoutRecommendation> onSuccess, Action<string> onError)
+    // 실제 API 호출 코루틴 (API 구현 후 주석 해제)
+    private IEnumerator FetchRecommendations(string memberId, Action<ApiRoutinesResponse> onSuccess, Action<string> onError)
     {
-        string url = $"{apiBaseUrl}/recommendations/{userId}";
+        string url = $"{apiBaseUrl}/ai/routines?memberId={memberId}";
+        
         using (UnityWebRequest webRequest = UnityWebRequest.Get(url))
         {
             yield return webRequest.SendWebRequest();
 
             if (webRequest.result == UnityWebRequest.Result.ConnectionError || webRequest.result == UnityWebRequest.Result.ProtocolError)
             {
-                onError?.Invoke(webRequest.error);
+                onError?.Invoke($"네트워크 에러: {webRequest.error}");
             }
             else
             {
                 try
                 {
-                    WorkoutRecommendation data = JsonUtility.FromJson<WorkoutRecommendation>(webRequest.downloadHandler.text);
+                    ApiRoutinesResponse data = JsonUtility.FromJson<ApiRoutinesResponse>(webRequest.downloadHandler.text);
+                    if (data == null || data.routines == null)
+                    {
+                        throw new Exception("JSON 데이터가 비어있거나 형식이 잘못되었습니다.");
+                    }
                     onSuccess?.Invoke(data);
                 }
                 catch (Exception e)
                 {
-                    onError?.Invoke($"JSON 파싱 에러: {e.Message}");
+                    onError?.Invoke($"JSON 파싱 에러: {e.Message}. 응답 내용: {webRequest.downloadHandler.text}");
                 }
             }
         }

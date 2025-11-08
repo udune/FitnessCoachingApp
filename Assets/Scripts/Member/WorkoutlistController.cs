@@ -21,11 +21,12 @@ public class WorkoutlistController : MonoBehaviour
     {
         ShowLoading();
         
-        string userId = "testUser"; // TODO: 실제 사용자 ID로 교체
-        ApiService.Instance.GetRecommendations(userId,
-            (workoutRecommendation) => {
-                // ApiService의 Workout 리스트를 UI용 WorkoutData 리스트로 변환
-                workouts = workoutRecommendation.recommendations.Select(w => new WorkoutData(w.name, w.sets, w.reps, "AI 추천")).ToArray();
+        // Swagger API에 따라 memberId를 전달합니다. "1"은 테스트용 ID입니다.
+        string memberId = "1"; 
+        ApiService.Instance.GetRecommendations(memberId,
+            (apiResponse) => {
+                // ApiService의 Workout 리스트(apiResponse.routines)를 UI용 WorkoutData 리스트로 변환
+                workouts = apiResponse.routines.Select(w => new WorkoutData(w.name, w.sets, w.reps, "AI 추천")).ToArray();
                 RefreshList();
                 ShowList();
             },
@@ -84,7 +85,7 @@ public class WorkoutlistController : MonoBehaviour
         if (errorText)
         {
             errorText.gameObject.SetActive(true);
-            errorText.text = $"에러가 발생했습니다: {message}";
+            errorText.text = $"데이터를 불러오지 못했습니다: {message}";
         }
         listContainer.gameObject.SetActive(false);
     }
