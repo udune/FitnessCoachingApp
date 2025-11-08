@@ -1,34 +1,45 @@
 using UnityEngine;
+using TMPro;
+using System.Linq;
 
 public class WorkoutlistController : MonoBehaviour
 {
     [Header("UI References")]
     [SerializeField] private Transform listContainer;
     [SerializeField] private GameObject workoutItemPrefab;
+    [SerializeField] private TextMeshProUGUI loadingText;
+    [SerializeField] private TextMeshProUGUI errorText;
 
     private WorkoutData[] workouts;
 
     private void Start()
     {
-        LoadMockData();
-        RefreshList();
+        LoadRecommendations();
     }
 
-    private void LoadMockData()
+    private void LoadRecommendations()
     {
-        workouts = new WorkoutData[]
-        {
-            new WorkoutData("바벨 스쿼트", 4, 12, "근력"),
-            new WorkoutData("덤벨 벤치프레스", 4, 10, "근력"),
-            new WorkoutData("데드리프트", 3, 8, "근력"),
-            new WorkoutData("러닝머신", 1, 20, "유산소"),
-            new WorkoutData("전신 스트레칭", 1, 10, "스트레칭")
-        };
+        ShowLoading();
+        
+        string userId = "testUser"; // TODO: 실제 사용자 ID로 교체
+        ApiService.Instance.GetRecommendations(userId,
+            (workoutRecommendation) => {
+                // ApiService의 Workout 리스트를 UI용 WorkoutData 리스트로 변환
+                workouts = workoutRecommendation.recommendations.Select(w => new WorkoutData(w.name, w.sets, w.reps, "AI 추천")).ToArray();
+                RefreshList();
+                ShowList();
+            },
+            (error) => {
+                ShowError(error);
+            }
+        );
     }
 
     public void RefreshList()
     {
         ClearList();
+        if (workouts == null) return;
+
         foreach (var workout in workouts)
         {
             CreateItem(workout);
@@ -39,7 +50,10 @@ public class WorkoutlistController : MonoBehaviour
     {
         GameObject item = Instantiate(workoutItemPrefab, listContainer);
         WorkoutItemUI itemScript = item.GetComponent<WorkoutItemUI>();
-        itemScript.Setup(data);
+        if (itemScript != null)
+        {
+            itemScript.Setup(data);
+        }
     }
 
     private void ClearList()
@@ -50,21 +64,40 @@ public class WorkoutlistController : MonoBehaviour
         }
     }
 
+    private void ShowLoading()
+    {
+        if (loadingText) loadingText.gameObject.SetActive(true);
+        if (errorText) errorText.gameObject.SetActive(false);
+        listContainer.gameObject.SetActive(false);
+    }
+
+    private void ShowList()
+    {
+        if (loadingText) loadingText.gameObject.SetActive(false);
+        if (errorText) errorText.gameObject.SetActive(false);
+        listContainer.gameObject.SetActive(true);
+    }
+
+    private void ShowError(string message)
+    {
+        if (loadingText) loadingText.gameObject.SetActive(false);
+        if (errorText)
+        {
+            errorText.gameObject.SetActive(true);
+            errorText.text = $"에러가 발생했습니다: {message}";
+        }
+        listContainer.gameObject.SetActive(false);
+    }
+
     public int GetCompletedCount()
     {
-        int count = 0;
-        foreach (var w in workouts)
-        {
-            if (w.completed)
-            {
-                count++;
-            }
-        }
-        return count;
+        if (workouts == null) return 0;
+        return workouts.Count(w => w.completed);
     }
 
     public int GetTotalCount()
     {
+        if (workouts == null) return 0;
         return workouts.Length;
     }
 }

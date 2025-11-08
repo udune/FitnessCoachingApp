@@ -4,7 +4,7 @@ using UnityEngine.UI;
 public class AICoachFAB : MonoBehaviour
 {
     [SerializeField]
-    private string sceneToLoad = "AICoachScene";
+    private string sceneToLoad = "AICoach";
 
     private Button fabButton;
 
