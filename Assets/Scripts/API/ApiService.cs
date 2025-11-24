@@ -25,31 +25,13 @@ public class ApiService : MonoBehaviour
 
     public void GetRecommendations(string memberId, Action<ApiRoutinesResponse> onSuccess, Action<string> onError)
     {
-        // StartCoroutine(FetchRecommendations(memberId, onSuccess, onError));
-
-        // --- Mock 데이터 사용 (API 미구현으로 임시 활성화) ---
-        Debug.Log("API가 아직 구현되지 않아 Mock 데이터를 사용합니다.");
-        var mockResponse = new ApiRoutinesResponse
-        {
-            routines = new List<Workout>
-            {
-                new Workout { name = "스쿼트 (Mock)", sets = 3, reps = 15 },
-                new Workout { name = "푸쉬업 (Mock)", sets = 3, reps = 12 },
-                new Workout { name = "플랭크 (Mock)", sets = 3, reps = 60 },
-                new Workout { name = "런지 (Mock)", sets = 3, reps = 10 },
-                new Workout { name = "덤벨 컬 (Mock)", sets = 3, reps = 12 }
-            }
-        };
-        onSuccess?.Invoke(mockResponse);
-        // --- Mock 데이터 끝 ---
+        StartCoroutine(FetchRecommendations(memberId, onSuccess, onError));
     }
 
-    /*
-    // 실제 API 호출 코루틴 (API 구현 후 주석 해제)
     private IEnumerator FetchRecommendations(string memberId, Action<ApiRoutinesResponse> onSuccess, Action<string> onError)
     {
         string url = $"{apiBaseUrl}/ai/routines?memberId={memberId}";
-        
+
         using (UnityWebRequest webRequest = UnityWebRequest.Get(url))
         {
             yield return webRequest.SendWebRequest();
@@ -76,5 +58,4 @@ public class ApiService : MonoBehaviour
             }
         }
     }
-    */
 }

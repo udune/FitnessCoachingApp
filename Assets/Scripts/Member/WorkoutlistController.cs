@@ -20,12 +20,10 @@ public class WorkoutlistController : MonoBehaviour
     private void LoadRecommendations()
     {
         ShowLoading();
-        
-        // Swagger API에 따라 memberId를 전달합니다. "1"은 테스트용 ID입니다.
-        string memberId = "1"; 
+
+        string memberId = "1";
         ApiService.Instance.GetRecommendations(memberId,
             (apiResponse) => {
-                // ApiService의 Workout 리스트(apiResponse.routines)를 UI용 WorkoutData 리스트로 변환
                 workouts = apiResponse.routines.Select(w => new WorkoutData(w.name, w.sets, w.reps, "AI 추천")).ToArray();
                 RefreshList();
                 ShowList();

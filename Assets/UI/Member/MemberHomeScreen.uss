@@ -1,3 +1,26 @@
-:root {
+#bottom-container {
+    flex-grow: 1;
+    align-self: stretch;
+    justify-content: center;
+    flex-direction: row;
+    position: absolute;
+    bottom: 20px;
+    left: 0;
+    right: 0;
+}
 
+#ai-coach-button {
+    -unity-text-align: middle-center;
+    align-self: center;
+    align-content: center;
+    justify-content: center;
+    align-items: center;
+    width: 200px;
+    height: 50px;
+    background-color: rgb(52, 152, 219);
+    -unity-font-definition: url("project://database/Assets/TextMesh%20Pro/Examples%20&%20Extras/Fonts/NotoSansKR-Bold.ttf?fileID=12800000&guid=43c956abedd13ac42b254be04620e0a0&type=3#NotoSansKR-Bold");
+    border-radius: 10px;
+    border-width: 0;
+    color: rgb(255, 255, 255);
+    font-size: 20px;
 }

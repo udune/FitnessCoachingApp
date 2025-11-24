@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using TMPro;
 using UnityEngine;
@@ -9,15 +8,15 @@ public class StatusGaugeUI : MonoBehaviour
     public Image fillImage;
     public TextMeshProUGUI titleText;
     public TextMeshProUGUI descriptionText;
-    
-    [Range(0, 100)] 
+
+    [Range(0, 100)]
     public float value;
-    
+
     private void Start()
     {
-        UpdateGauge(75f); // 초기 값 설정
+        UpdateGauge(75f);
     }
-    
+
     public void UpdateGauge(float newValue)
     {
         StartCoroutine(AnimateGauge(value, newValue));
@@ -36,30 +35,5 @@ public class StatusGaugeUI : MonoBehaviour
         }
 
         value = to;
-    }
-
-    Color GetColorByValue(float value)
-    {
-        return Color.Lerp(Color.red, Color.green, value / 100f);
-    }
-    
-    string GetStatusText(float value)
-    {
-        if (value >= 80f)
-        {
-            return "좋음";
-        }
-
-        if (value >= 60f)
-        {
-            return "보통";
-        }
-
-        if (value >= 40f)
-        {
-            return "주의";
-        }
-        
-        return "나쁨";
     }
 }
